@@ -5,7 +5,9 @@ console.log("Expense model:", Expense);
 
 dotenv.config();
 
-const expenseEmail = async () => {  // ✅ 1. Missing "async" keyword
+let emailSent = false;
+
+const expenseEmail = async () => {  
 
     const expenses = await Expense.find();
 
@@ -13,7 +15,7 @@ const expenseEmail = async () => {  // ✅ 1. Missing "async" keyword
         (acc, expense) => acc + expense.value, 0  
     );
 
-    if (totalExpense > 10000) {
+    if (totalExpense > 10000 && !emailSent) {
         let messageOptions = {
             from: process.env.EMAIL,
             to: process.env.ADMIN_EMAIL,
@@ -22,7 +24,12 @@ const expenseEmail = async () => {  // ✅ 1. Missing "async" keyword
         };
 
         await sendMail(messageOptions);
+        emailSent = true; 
+        console.log("Warning email sent!");
     }    
+    if (totalExpense <= 10000) {
+        emailSent = false;
+    }
 };
 
 module.exports = expenseEmail; // default export
