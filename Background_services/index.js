@@ -2,13 +2,11 @@ const express = require('express');
 const cron = require('node-cron');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const  expenseEmail = require('./Emailservice/Expense'); // ✅ Add this
 
 dotenv.config({ path: './.env' });
 
 const app = express();
-
-console.log(process.env.PORT);
-console.log(process.env.DB_CONNECTION);
 
 mongoose.connect(process.env.DB_CONNECTION)
 .then(() => { 
@@ -19,12 +17,17 @@ mongoose.connect(process.env.DB_CONNECTION)
 });
 
 const run = () => {
-    cron.schedule('* * * * * *', () => {
-        console.log('running a task after every second');
+    cron.schedule('* * * * * *', async () => {  // ✅ make async if expenseEmail is async
+        try {
+            await expenseEmail();
+        } catch (err) {
+            console.error('Error running expenseEmail:', err);
+        }
     });
 };
 
 run();
+
 app.listen(process.env.PORT, () => {
-    console.log(`server is running on Port ${process.env.PORT}`);
+    console.log(`Background services are running on Port ${process.env.PORT}`);
 });
