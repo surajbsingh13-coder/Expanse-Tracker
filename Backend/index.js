@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json()); 
 
-// Routes
+// RoutesS
 app.use('/expenses', expenseRoute);
 
 //DB CONEECTION

@@ -18,7 +18,7 @@ let configurations = {
 };
 
 const sendMail = async (messageOptions) => {
-    const transporter = await createTransporter(configurations);
+    const transporter = createTransporter(configurations);
     await transporter.verify();
     await transporter.sendMail(messageOptions, (error, info) => {
         if (error) {
